@@ -1,6 +1,14 @@
-transactions=("P", "I1", "I2", "R1", "R2")
-transactionQueues=[["P"]]
-for transaction in [x for x in transactions if x != "P"]:
+def printTransactionQueues():
+   print("Transaction Queue Count: " + str(len(transactionQueues)))
+   for transactionQueue in transactionQueues:
+       print(transactionQueue)
+   print()
+
+transactions=("P", "I", "I", "R", "R")
+
+print("Step 1: Calculate all possibilities")
+transactionQueues=[[]]
+for transaction in transactions:
 
     print("Transaction: " + transaction)
 
@@ -15,39 +23,57 @@ for transaction in [x for x in transactions if x != "P"]:
             newTransactionQueues.append(newTransactionQueue)
 
     transactionQueues=newTransactionQueues
+printTransactionQueues()
 
-
+print("Step 2: Remove the queues in which R is before P")
 newTransactionQueues=[]
-print()
-print("Transaction Queue Count: " + str(len(transactionQueues)))
 for transactionQueue in transactionQueues:
-    print(transactionQueue)
-
-    if (transactionQueue.index("P") > transactionQueue.index("R1")) or (transactionQueue.index("P") > transactionQueue.index("R2")):
+    if transactionQueue.index("P") > transactionQueue.index("R"):
         continue
+    newTransactionQueues.append(transactionQueue)
+transactionQueues=newTransactionQueues
+printTransactionQueues()
 
+print('''Step 3: Merge "I"->"I" to "I", "R"->"R" to "R"''')
+newTransactionQueues=[]
+for transactionQueue in transactionQueues:
     newTransactionQueue=[]
     previousTransaction=""
-    currentTransaction=""
     for transaction in transactionQueue:
-        currentTransaction = transaction
-        if previousTransaction != "":
-            if previousTransaction[0] == "I" and currentTransaction[0] == "I":
-                newTransactionQueue.append("I")
-                currentTransaction=""
-            elif previousTransaction[0] == "R" and currentTransaction[0] == "R":
-                newTransactionQueue.append("R")
-                currentTransaction=""
-            else:
-                newTransactionQueue.append(previousTransaction)
-        previousTransaction=currentTransaction
-    newTransactionQueue.append(currentTransaction)
-
+        if previousTransaction != transaction:
+            newTransactionQueue.append(transaction)
+        previousTransaction=transaction
     newTransactionQueues.append(newTransactionQueue)
-
-    
 transactionQueues=newTransactionQueues
-print()
-print("Transaction Queue Count: " + str(len(transactionQueues)))
+printTransactionQueues()
+
+print("Step 4: Remove duplicated queues")
+newTransactionQueues=[]
 for transactionQueue in transactionQueues:
-    print(transactionQueue)
+    for newTransactionQueue in newTransactionQueues:
+        if len(transactionQueue) != len(newTransactionQueue):
+            continue
+        else:
+            for i in range(len(transactionQueue)):
+                if transactionQueue[i] != newTransactionQueue[i]:
+                    break
+            else:
+                # transactionQueue exists in newTransactionQueues
+                break
+    else:
+        # transactionQueue does not exist in newTransactionQueues
+        newTransactionQueues.append(transactionQueue)
+transactionQueues=newTransactionQueues
+printTransactionQueues()
+
+print("Step 5: Add index to I and R")
+for transactionQueue in transactionQueues:
+    indexI=indexR=1
+    for i in range(len(transactionQueue)):
+        if transactionQueue[i] == "I":
+            transactionQueue[i]="I"+str(indexI)
+            indexI+=1
+        elif transactionQueue[i] == "R":
+            transactionQueue[i]="R"+str(indexR)
+            indexR+=1
+printTransactionQueues()
