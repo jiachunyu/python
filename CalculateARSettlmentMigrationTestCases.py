@@ -9,19 +9,12 @@ transactions=("P", "I", "I", "R", "R")
 print("Step 1: Calculate all possibilities")
 transactionQueues=[[]]
 for transaction in transactions:
-
-    print("Transaction: " + transaction)
-
     newTransactionQueues=[]
     for transactionQueue in transactionQueues:
-
-        print("Existing Transaction Queue: " + str(transactionQueue))
-
         for index in range(len(transactionQueue) + 1):
             newTransactionQueue=transactionQueue.copy()
             newTransactionQueue.insert(index, transaction)
             newTransactionQueues.append(newTransactionQueue)
-
     transactionQueues=newTransactionQueues
 printTransactionQueues()
 
